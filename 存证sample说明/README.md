@@ -13,8 +13,8 @@ FISCO BCOS是聚焦于金融级应用服务的区块链底层技术平台。在�
 2. 防纂改、可追溯：利用区块链本身特性，永久记录事件的发生，并可实时追溯举证。
 3. 隐私保护：使用数字加密和零知识证明技术，只有关键信息经HASH运算后上链。确保数据完整的同时，保护各方隐私。
 4. 扩展性强：使用两类智能合约对存证进行管理，使系统获得更好的扩展性。 
-- 工厂合约：由存证各方事前约定，存储存证生效条件，并管理存证的生成。
-- 存证合约：由工厂合约生成，存储存证id、hash和各方签名（每张存证一个合约）。
+- 工厂合约（EvidenceSignersData.sol）：由存证各方事前约定，存储存证生效条件，并管理存证的生成。
+- 存证合约（Evidence.sol）：由工厂合约生成，存储存证id、hash和各方签名（每张存证一个合约）。
 
 ## 3. 适用场景
 本sample适用于所有需要进行存证、核证、取证的业务场景，尤其是需要解决多方信任问题或获取司法监管许可的情况。以下列举了部分可以使用该sample快速支持的业务场景：
@@ -26,7 +26,7 @@ FISCO BCOS是聚焦于金融级应用服务的区块链底层技术平台。在�
 1. 本文档使用单个区块链节点来模拟区块链环境。
 2. 搭建FISCO BCOS区块链环境（参考FISCO BCOS使用文档），操作系统为Ubuntu(建议16.04)或CentOS（建议7.2）。
 3. 将存证客户端导入Eclipse（本说明文档以Eclipse为例），配置JDK（1.8）。  
-   存证客户端下载URL：http://git.weoa.com/ttip/evidenceSample/tree/master/evidence
+   存证客户端下载URL：https://github.com/FISCO-BCOS/evidenceSample/tree/master/evidence
 4. 在配置文件applicationContext.xml中配置区块链节点信息，具体参照5.2节区块链节点信息配置。
 5. 更新签名机构公私钥（示例演示可以直接使用sample提供公私钥），公钥在applicationContext.xml文件中配置，私钥需替换/evidence/src/main/resources下的私钥文件，具体参照5.1节中角色公钥配置说明。
  
@@ -87,7 +87,7 @@ evidence/src/main/resources/applicationContext.xml文件配置说明
 
 本节提供使用示例工具包，以便开发者能够快速熟悉存证应用。在工具包中，bin文件下为执行脚本，conf文件夹下为工具包配置文件，lib文件下为存证案例依赖包,contracts中存放合约源码（合约java代码生成可以参照6.7）
 
-* 存证工具包可以通过存证客户端gradle run生成；或者直接下载，下载URL：http://git.weoa.com/ttip/evidenceSample/tree/master/evidence_toolkit
+* 存证工具包可以通过存证客户端gradle run生成；或者直接下载，下载URL：https://github.com/FISCO-BCOS/evidenceSample/tree/master/evidence_toolkit
 * 下载完成之后建议对bin文件夹下的文件执行chmod命令。
 * 安装solc solidity编译器（直接使用远程二机制源或源码安装）
 	Ubuntu安装 apt install solc 或 源码安装
