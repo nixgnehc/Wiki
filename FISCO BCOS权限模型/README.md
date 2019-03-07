@@ -124,11 +124,15 @@ TransactionFilterChain合约在部署系统代理合约时，将首次被部署�
 	babel-node AuthorityManager.js Group listPermission 1 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9 
 
 
-	## 5、示例
+## 5、示例
 
-假定合约具备：ａ(bytes32[]),b(address),c(address,bytes32) 三个方法，部署地址为:0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912。
+约定
 
-用户1:0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9；用户2:0xd6576b6b0d14cb11a39d65486e340674db455313;用户3：0x24674063c4618f4993fbc75dc2f18e55a6f391ca
+合约具备方法：ａ(bytes32[]),b(address),c(address,bytes32) ，部署地址为:0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912。
+
+用户1:0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9；
+用户2:0xd6576b6b0d14cb11a39d65486e340674db455313;
+用户3：0x24674063c4618f4993fbc75dc2f18e55a6f391ca
 
 ###### 配置god账号
 ```
