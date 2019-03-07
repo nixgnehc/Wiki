@@ -45,7 +45,7 @@ TransactionFilterChain合约在部署系统代理合约时，将首次被部署�
 
 ## 4、脚本使用说明
 
-4.1、systemcontract目录下ARPI_Model.js脚本提供一键启用FISCO BCOS权限控制模型ARPI的功能。脚本操作包括启用权限控制状态，并根据**3、FISCO BCOS在联盟链权限控制上的实践**中的内容设置角色和权限。**切记**：执行脚本后，系统将启用权限控制状态，如不需要，可使用上帝账号关闭该权限控制，否则将意外地影响其他账号对合约的部署及调用。
+4.1、systemcontract目录下ARPI_Model.js脚本提供一键启用FISCO BCOS权限控制模型ARPI的功能。脚本操作包括启用权限控制状态，并根据**3、FISCO BCOS在联盟链权限控制上的实践**中的内容设置角色和权限。**切记**：执行脚本后，系统将启用权限控制状态，如不需要，可使用上帝账号关闭该权限控制，否则将意外地影响其他账号对合约的部署及调用。(ps:ARPI_Model.js 仅示例，生产环境中不建议使用；执行脚本需要god账号)
 
 4.2、同时systemcontract目录下提供一个AuthorityManager.js脚本，用于对TransactionFilterChain进行管理，面向FilterChain、Filter和Group三个对象提供操作查询接口。**AuthorityManager.js和ARPI_Model.js脚本均需使用上帝账号执行。**
 
@@ -75,7 +75,8 @@ TransactionFilterChain合约在部署系统代理合约时，将首次被部署�
 
 ![无调用权限](./images/pic8.jpg) 
 
-4.4、AuthorityManager.js脚本具体使用例子，为排除干扰条件，执行前先确认config.js内的account为上帝账号。
+4.4、AuthorityManager.js脚本所有命令如下：
+（为排除干扰条件，执行前先确认config.js内的account为上帝账号）
 
 	// 添加Filter到系统合约Chain，后加Filter名称、版本、描述三个参数
 	babel-node AuthorityManager.js FilterChain addFilter NewFilter 2.0 FilterUsedForTest
@@ -121,3 +122,65 @@ TransactionFilterChain合约在部署系统代理合约时，将首次被部署�
 	babel-node AuthorityManager.js Group checkPermission 1 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9 ContractA.address "set1(string)"
 	// 列出账号/角色的权限，后加Filter序号、账号两个参数
 	babel-node AuthorityManager.js Group listPermission 1 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9 
+
+
+	## 5、示例
+
+假定合约具备：ａ(bytes32[]),b(address),c(address,bytes32) 三个方法，部署地址为:0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912。
+
+用户1:0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9；用户2:0xd6576b6b0d14cb11a39d65486e340674db455313;用户3：0x24674063c4618f4993fbc75dc2f18e55a6f391ca
+
+###### 配置god账号
+```
+vim /mydata/FISCO-BCOS/tools/web3lib/config.js
+```
+###### 创建Filter
+```
+babel-node AuthorityManager.js FilterChain addFilter evidenceFilter 1.0 "zbj.com evidence filter"
+babel-node AuthorityManager.js Filter enableFilter 0
+```
+
+###### 用户1
+赋予用户具备合约所有方法的权限
+```
+babel-node AuthorityManager.js Filter setUsertoNewGroup 0 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9
+
+babel-node AuthorityManager.js Group addPermission 0 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9 0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912 "ａ(bytes32[])"  // 添加权限
+babel-node AuthorityManager.js Group addPermission 0 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9 0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912 "b(address)"
+babel-node AuthorityManager.js Group addPermission 0 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9 0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912 "c(address,bytes32)"
+
+babel-node AuthorityManager.js Group listPermission 0 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9
+```
+
+
+###### 用户2
+与用户1权限一致
+```
+babel-node AuthorityManager.js Filter setUsertoExistingGroup 0 0xd6576b6b0d14cb11a39d65486e340674db455313 0x9242575186c26ce2dfa280f89c55ce6acdf163f6
+```
+
+
+###### 用户3
+赋予用户仅具备b,c方法的权限
+```
+babel-node AuthorityManager.js Filter setUsertoNewGroup 0 0x24674063c4618f4993fbc75dc2f18e55a6f391ca
+
+babel-node AuthorityManager.js Group addPermission 0 0x24674063c4618f4993fbc75dc2f18e55a6f391ca 0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912 "b(address)"
+babel-node AuthorityManager.js Group addPermission 0 0x24674063c4618f4993fbc75dc2f18e55a6f391ca 0xbdd11894c9f13d8ab1fc996bfdf3cb93c4916912 "c(address,bytes32)"
+
+babel-node AuthorityManager.js Group listPermission 0 0x24674063c4618f4993fbc75dc2f18e55a6f391ca
+
+```
+
+##### 关闭权限
+```
+babel-node AuthorityManager.js Filter disableFilter 1  // 关闭权限，后面可以使用enableFilter 回复权限
+babel-node AuthorityManager.js FilterChain delFilter 1 // 删除权限,不可恢复
+babel-node AuthorityManager.js FilterChain resetFilter // 重置权限/删除所有权限，不可恢复
+```
+
+###### 合约部署权限
+```
+babel-node AuthorityManager.js Group getDeployStatus 0 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9
+babel-node AuthorityManager.js Group enableDeploy 0 0x4015bd4dd8767d568fc54cf6d0817ecc95d166d9
+```
